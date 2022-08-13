@@ -4,7 +4,7 @@ import xml.etree.ElementTree as ET
 from glob import glob
 from pathlib import Path
 from typing import List
-
+import json
 import pandas as pd
 from tqdm import tqdm
 
@@ -38,6 +38,16 @@ def coqui(root_path, meta_file, ignored_speakers=None):
         )
     if not_found_counter > 0:
         print(f" | > [!] {not_found_counter} files not found")
+    return items
+
+
+def json_manifest(root_path, meta_file, speaker_name=None, **kwargs):  # pylint: disable=unused-argument
+    manifest = os.path.join(root_path, meta_file)
+    items = []    
+    with open(manifest,'r') as f:
+        for l in f:
+            data = json.loads(l)
+            items.append({"text": data['text'], "audio_file": data['audio_filepath'], "speaker_name": speaker_name})
     return items
 
 

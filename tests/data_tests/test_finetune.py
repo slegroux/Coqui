@@ -1,23 +1,30 @@
+import functools
+import random
+import unittest
+import torch
 import os
 
-from sklearn.utils import resample
-
-from trainer import Trainer, TrainerArgs
-
-from TTS.config import BaseAudioConfig, BaseDatasetConfig
+from TTS.config.shared_configs import BaseDatasetConfig, BaseAudioConfig
 from TTS.tts.configs.fast_pitch_config import FastPitchConfig
+from TTS.utils.audio import AudioProcessor
+from TTS.tts.utils.text.tokenizer import TTSTokenizer
 from TTS.tts.datasets import load_tts_samples
 from TTS.tts.models.forward_tts import ForwardTTS
 from TTS.tts.utils.speakers import SpeakerManager
-from TTS.tts.utils.text.tokenizer import TTSTokenizer
-from TTS.utils.audio import AudioProcessor
+from trainer import Trainer, TrainerArgs
 
+# Fixing random state to avoid random fails
+torch.manual_seed(0)
 output_path = os.path.dirname(os.path.abspath(__file__))
-dataset_config = BaseDatasetConfig(name="vctk", meta_file_train="", path=os.path.join(output_path, "../VCTK-Corpus-0.92-22k/"))
+dataset_config = BaseDatasetConfig(
+    name="json_manifest",
+    meta_file_train="rishav_5min.train.json",
+    path="/home/syl20/data/en/webex_speakers/en",
+    language="en",
+)
 
 audio_config = BaseAudioConfig(
     sample_rate=22050,
-    resample=False,
     do_trim_silence=True,
     trim_db=23.0,
     signal_norm=False,
@@ -30,7 +37,7 @@ audio_config = BaseAudioConfig(
 )
 
 config = FastPitchConfig(
-    run_name="fast_pitch_vctk",
+    run_name="fast_pitch_vctk_rishav",
     audio=audio_config,
     batch_size=32,
     eval_batch_size=16,
@@ -59,21 +66,8 @@ config = FastPitchConfig(
     use_speaker_embedding=True,
 )
 
-# INITIALIZE THE AUDIO PROCESSOR
-# Audio processor is used for feature extraction and audio I/O.
-# It mainly serves to the dataloader and the training loggers.
 ap = AudioProcessor.init_from_config(config)
-
-# INITIALIZE THE TOKENIZER
-# Tokenizer is used to convert text to sequences of token IDs.
-# If characters are not defined in the config, default characters are passed to the config
 tokenizer, config = TTSTokenizer.init_from_config(config)
-
-# LOAD DATA SAMPLES
-# Each sample is a list of ```[text, audio_file_path, speaker_name]```
-# You can define your custom sample loader returning the list of samples.
-# Or define your custom formatter and pass it to the `load_tts_samples`.
-# Check `TTS.tts.datasets.load_tts_samples` for more details.
 train_samples, eval_samples = load_tts_samples(
     dataset_config,
     eval_split=True,
@@ -81,21 +75,9 @@ train_samples, eval_samples = load_tts_samples(
     eval_split_size=config.eval_split_size,
 )
 
-# init speaker manager for multi-speaker training
-# it maps speaker-id to speaker-name in the model and data-loader
-speaker_manager = SpeakerManager()
-speaker_manager.set_ids_from_data(train_samples + eval_samples, parse_key="speaker_name")
-config.model_args.num_speakers = speaker_manager.num_speakers
-
-# init model
-model = ForwardTTS(config, ap, tokenizer, speaker_manager=speaker_manager)
-
-# INITIALIZE THE TRAINER
-# Trainer provides a generic API to train all the 🐸TTS models with all its perks like mixed-precision training,
-# distributed training, etc.
+model = ForwardTTS(config, ap, tokenizer)
 trainer = Trainer(
     TrainerArgs(), config, output_path, model=model, train_samples=train_samples, eval_samples=eval_samples
 )
 
-# AND... 3,2,1... 🚀
-trainer.fit()
+# trainer.fit()

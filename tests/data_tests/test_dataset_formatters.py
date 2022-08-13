@@ -2,7 +2,7 @@ import os
 import unittest
 
 from tests import get_tests_input_path
-from TTS.tts.datasets.formatters import common_voice
+from TTS.tts.datasets.formatters import common_voice, json_manifest
 
 
 class TestTTSFormatters(unittest.TestCase):
@@ -15,3 +15,9 @@ class TestTTSFormatters(unittest.TestCase):
 
         assert items[-1]["text"] == "Competition for limited resources has also resulted in some local conflicts."
         assert items[-1]["audio_file"] == os.path.join(get_tests_input_path(), "clips", "common_voice_en_19737074.wav")
+
+    def test_json_manifest(self):
+        root_path = "/home/syl20/data/en/webex_speakers/en"
+        meta_file = "rishav_5min.test.json"
+        items = json_manifest(root_path, meta_file, speaker_name='rishav')
+        print(items)

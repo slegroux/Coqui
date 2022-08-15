@@ -12,9 +12,10 @@ from TTS.tts.utils.text.tokenizer import TTSTokenizer
 from TTS.utils.audio import AudioProcessor
 
 output_path = os.path.dirname(os.path.abspath(__file__))
-dataset_config = BaseDatasetConfig(
-    name="vctk", meta_file_train="", language="en-us", path=os.path.join(output_path, "../VCTK/")
-)
+# dataset_config = BaseDatasetConfig(
+#     name="vctk", meta_file_train="", language="en-us", path=os.path.join(output_path, "../VCTK/")
+# )
+dataset_config = BaseDatasetConfig(name="vctk", language="en-us", meta_file_train="", path=os.path.join(output_path, "../VCTK-Corpus-0.92-22k/"))
 
 
 audio_config = BaseAudioConfig(

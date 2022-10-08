@@ -7,6 +7,7 @@ from typing import List
 
 import pandas as pd
 from tqdm import tqdm
+from datasets import load_dataset # hugging face datasets
 
 ########################
 # DATASETS
@@ -41,6 +42,31 @@ def coqui(root_path, meta_file, ignored_speakers=None):
         print(f" | > [!] {not_found_counter} files not found")
     return items
 
+def spgispeech(split='test', **kwargs):  # pylint: disable=unused-argument
+    """Normalize Kensho spgi speech dataset from Hugging Face
+    
+    https://huggingface.co/datasets/kensho/spgispeech#dataset-description
+
+    Args:
+        split (str): which split to load {S, M, L, validation or test}
+
+    Returns:
+        items (dict): {"text", audio_file", "speaker_name", "root_path"}
+
+    """
+
+    # download data from huggingface
+    if (split == 'validation'):
+        ds = load_dataset("kensho/spgispeech", 'dev', use_auth_token=True)
+    else:
+        ds = load_dataset("kensho/spgispeech", split, use_auth_token=True)
+
+    items = []
+    if (split == 'S' or split == 'M' or split =='L'): split='train'
+
+    for item in ds[split]:
+        items.append({"text": item['transcript'], "audio_file": item['audio']['path'], "speaker_name": item['wav_filename'].split('/')[0], "root_path": item['audio']['path']})
+    return items
 
 def tweb(root_path, meta_file, **kwargs):  # pylint: disable=unused-argument
     """Normalize TWEB dataset.

@@ -42,8 +42,8 @@ def coqui(root_path, meta_file, ignored_speakers=None):
         print(f" | > [!] {not_found_counter} files not found")
     return items
 
-def spgispeech(split='test', **kwargs):  # pylint: disable=unused-argument
-    """Normalize Kensho spgi speech dataset from Hugging Face
+def spgi(root_path=None, meta_file_train=None, split='S', **kwargs):  # pylint: disable=unused-argument
+    """ Normalize Kensho spgi speech dataset from Hugging Face
     
     https://huggingface.co/datasets/kensho/spgispeech#dataset-description
 
@@ -62,7 +62,8 @@ def spgispeech(split='test', **kwargs):  # pylint: disable=unused-argument
         ds = load_dataset("kensho/spgispeech", split, use_auth_token=True)
 
     items = []
-    if (split == 'S' or split == 'M' or split =='L'): split='train'
+    if (split == 'S' or split == 'M' or split =='L'):
+        split='train'
 
     for item in ds[split]:
         items.append({"text": item['transcript'], "audio_file": item['audio']['path'], "speaker_name": item['wav_filename'].split('/')[0], "root_path": item['audio']['path']})

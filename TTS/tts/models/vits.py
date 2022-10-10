@@ -1632,7 +1632,8 @@ class Vits(BaseTTS):
             else:
                 loader = DataLoader(
                     dataset,
-                    batch_sampler=sampler,
+                    sampler=sampler,
+                    batch_size=config.eval_batch_size if is_eval else config.batch_size,
                     collate_fn=dataset.collate_fn,
                     num_workers=config.num_eval_loader_workers if is_eval else config.num_loader_workers,
                     pin_memory=False,

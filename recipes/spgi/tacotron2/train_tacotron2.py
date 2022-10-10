@@ -29,8 +29,8 @@ audio_config = BaseAudioConfig(
 
 config = Tacotron2Config(  # This is the config that is saved for the future use
     audio=audio_config,
-    batch_size=144,
-    eval_batch_size=32,
+    batch_size=64,
+    eval_batch_size=16,
     num_loader_workers=4,
     num_eval_loader_workers=4,
     run_eval=True,

@@ -51,7 +51,8 @@ def coqui(root_path, meta_file, ignored_speakers=None):
         print(f" | > [!] {not_found_counter} files not found")
     return items
 
-def spgi(root_path=None, meta_file_train=None, split='S', **kwargs):  # pylint: disable=unused-argument
+
+def spgi(root_path=None, meta_file_train=None, split='validation', **kwargs):  # pylint: disable=unused-argument
     """ Normalize Kensho spgi speech dataset from Hugging Face
     
     https://huggingface.co/datasets/kensho/spgispeech#dataset-description
@@ -77,6 +78,22 @@ def spgi(root_path=None, meta_file_train=None, split='S', **kwargs):  # pylint: 
     for item in ds[split]:
         items.append({"text": item['transcript'], "audio_file": item['audio']['path'], "speaker_name": item['wav_filename'].split('/')[0], "root_path": item['audio']['path']})
     return items
+
+
+def spgi_vca(root_path, meta_file, **kwargs):
+    """ Normalize Kensho SPGI speech dataset.
+    """
+    txt_file = os.path.join(root_path, meta_file)
+    items = []
+    with open(txt_file, "r", encoding="utf-8") as ttf:
+        for line in ttf:
+            cols = line.split("\t")
+            wav_file = os.path.join(root_path, cols[0])
+            text = cols[1].strip()
+            speaker_name = cols[0].split('/')[0]
+            items.append({"text": text, "audio_file": wav_file, "speaker_name": speaker_name, "root_path": root_path})
+    return items
+
 
 def tweb(root_path, meta_file, **kwargs):  # pylint: disable=unused-argument
     """Normalize TWEB dataset.

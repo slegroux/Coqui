@@ -12,7 +12,9 @@ from TTS.utils.audio import AudioProcessor
 
 output_path = os.path.dirname(os.path.abspath(__file__))
 dataset_config = BaseDatasetConfig(
-    formatter="spgi", meta_file_train="", language="en-us"
+    formatter="spgi_vca",
+    meta_file_train="spgi.txt",
+    path=os.path.join(output_path, "/home/syl20/data/spgi")
 )
 
 
@@ -27,7 +29,7 @@ vitsArgs = VitsArgs(
 config = VitsConfig(
     model_args=vitsArgs,
     audio=audio_config,
-    run_name="vits_vctk",
+    run_name="vits_spgi",
     batch_size=32,
     eval_batch_size=16,
     batch_group_size=5,

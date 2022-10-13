@@ -2,7 +2,7 @@ import os
 import unittest
 
 from tests import get_tests_input_path
-from TTS.tts.datasets.formatters import common_voice, spgi
+from TTS.tts.datasets.formatters import common_voice, spgi, spgi_vca
 
 
 class TestTTSFormatters(unittest.TestCase):
@@ -23,3 +23,9 @@ class TestTTSFormatters(unittest.TestCase):
         assert items[-1]["text"] == "This is one of our largest opportunities to increase overall profitability."
         items = spgi(split='validation')
         assert len(items) == 39304
+
+    def test_spgi_vca(self):
+        root_path = "/home/syl20/data/spgi"
+        meta_file = "spgi.txt"
+        items = spgi_vca(root_path, meta_file)
+        assert items[0]["text"] == "to structure an entry into new countries where Natura is not present, not considering Aesop, I'm talking about the actual Natura brand."

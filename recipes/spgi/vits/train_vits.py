@@ -10,11 +10,13 @@ from TTS.tts.utils.speakers import SpeakerManager
 from TTS.tts.utils.text.tokenizer import TTSTokenizer
 from TTS.utils.audio import AudioProcessor
 
+SPGI_ROOT = "/home/syl20/data/en/spgi/spgi-vca"
+
 output_path = os.path.dirname(os.path.abspath(__file__))
 dataset_config = BaseDatasetConfig(
     formatter="spgi_vca",
     meta_file_train="spgi.txt",
-    path=os.path.join(output_path, "/home/syl20/data/spgi")
+    path=os.path.join(output_path, SPGI_ROOT)
 )
 
 

@@ -245,7 +245,7 @@ class PosteriorEncoder(nn.Module):
     ):
         """Posterior Encoder of VITS model.
 
-        ::
+        # ::
             x -> conv1x1() -> WaveNet() (non-causal) -> conv1x1() -> split() -> [m, s] -> sample(m, s) -> z
 
         Args:

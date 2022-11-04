@@ -10,7 +10,7 @@ from TTS.tts.utils.speakers import SpeakerManager
 from TTS.tts.utils.text.tokenizer import TTSTokenizer
 from TTS.utils.audio import AudioProcessor
 
-SPGI_ROOT = "/home/syl20/data/en/spgi/spgi-vca"
+SPGI_ROOT = "/data/en/spgi/spgi-vca"
 
 output_path = os.path.dirname(os.path.abspath(__file__))
 dataset_config = BaseDatasetConfig(
@@ -32,11 +32,11 @@ config = VitsConfig(
     model_args=vitsArgs,
     audio=audio_config,
     run_name="vits_spgi",
-    batch_size=32,
-    eval_batch_size=16,
+    batch_size=64,
+    eval_batch_size=32,
     batch_group_size=5,
-    num_loader_workers=4,
-    num_eval_loader_workers=4,
+    num_loader_workers=8,
+    num_eval_loader_workers=8,
     run_eval=True,
     test_delay_epochs=-1,
     epochs=1000,
@@ -48,7 +48,7 @@ config = VitsConfig(
     print_step=25,
     print_eval=False,
     mixed_precision=True,
-    max_text_len=325,  # change this if you have a larger VRAM than 16GB
+    max_text_len=650,  # change this if you have a larger VRAM than 16GB
     output_path=output_path,
     datasets=[dataset_config],
     cudnn_benchmark=False,

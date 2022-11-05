@@ -14,7 +14,7 @@ from TTS.utils.audio import AudioProcessor
 
 output_path = os.path.dirname(os.path.abspath(__file__))
 
-mailabs_path = "/home/syl20/data/en/m-ailabs/en_US"
+mailabs_path = "/data/en/m-ailabs/data/**"
 dataset_paths = glob(mailabs_path)
 dataset_config = [
     BaseDatasetConfig(formatter="mailabs", meta_file_train=None, path=path, language=path.split("/")[-1])
@@ -40,9 +40,9 @@ vitsArgs = VitsArgs(
 config = VitsConfig(
     model_args=vitsArgs,
     audio=audio_config,
-    run_name="vits_vctk",
+    run_name="multilingual_mailabs_en_es",
     use_speaker_embedding=True,
-    batch_size=32,
+    batch_size=32, #TODO: double
     eval_batch_size=16,
     batch_group_size=0,
     num_loader_workers=4,
@@ -80,14 +80,20 @@ config = VitsConfig(
             None,
             "en_US",
         ],
-        [
-            "Il m'a fallu beaucoup de temps pour d\u00e9velopper une voix, et maintenant que je l'ai, je ne vais pas me taire.",
-            "ezwa",
+        [ 
+            "Me costo bastante tiempo desarollar mi voz, y ahora que ya la tengo, no me voy a callar.",
+            "victor_villarraza",
             None,
-            "fr_FR",
-        ],
-        ["Ich finde, dieses Startup ist wirklich unglaublich.", "eva_k", None, "de_DE"],
-        ["Я думаю, что этот стартап действительно удивительный.", "oblomov", None, "ru_RU"],
+            "es_ES",
+        ]
+        # [
+        #     "Il m'a fallu beaucoup de temps pour d\u00e9velopper une voix, et maintenant que je l'ai, je ne vais pas me taire.",
+        #     "ezwa",
+        #     None,
+        #     "fr_FR",
+        # ],
+        # ["Ich finde, dieses Startup ist wirklich unglaublich.", "eva_k", None, "de_DE"],
+        # ["Я думаю, что этот стартап действительно удивительный.", "oblomov", None, "ru_RU"],
     ],
 )
 

@@ -94,6 +94,40 @@ def spgi_vca(root_path, meta_file, **kwargs):
             items.append({"text": text, "audio_file": wav_file, "speaker_name": speaker_name, "root_path": root_path})
     return items
 
+def webex_speakers(root_path, meta_file=None, ignored_speakers=None):
+    if meta_file is None or meta_file=="":
+        meta_file = os.path.join(root_path, 'metadata.txt')
+    print(f"Meta file: {meta_file}")
+
+    df = pd.read_csv(os.path.join(root_path, meta_file), sep="|", names=['speaker', 'wav', 'text'])
+    items = []
+
+    skipped = 0
+    for row in df.itertuples():
+        if pd.notnull(row.wav) and os.path.exists(row.wav):
+            items.append({'text':row.text, 'audio_file':row.wav, 'speaker_name':row.speaker, "root_path": root_path})
+        else:
+            skipped+=1
+    
+    print(f'{skipped} webex files not found')
+    
+    return items
+
+def google_es_co(root_path, meta_file=None, ignored_speakers=None):
+    if meta_file is None or meta_file=="":
+        meta_file = os.path.join(root_path, 'line_index.tsv')
+    print(f"Meta File: {meta_file}")
+    items = []
+
+    with open(meta_file, 'r') as file:
+        for line in file:
+            split = line.split('\t')
+            text = split[-1]
+            wav = os.path.join(root_path, split[0][:3], f'{split[0]}.wav')
+            speaker = split[0][:split[0].find('_', 4)]
+            items.append({'text':text, 'audio_file':wav, 'speaker_name':speaker, 'root_path': root_path})
+
+    return items
 
 def tweb(root_path, meta_file, **kwargs):  # pylint: disable=unused-argument
     """Normalize TWEB dataset.

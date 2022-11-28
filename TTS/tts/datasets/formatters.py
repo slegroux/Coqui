@@ -481,7 +481,7 @@ def vctk(root_path, meta_files=None, wavs_path="wav48_silence_trimmed", mic="mic
     return items
 
 
-def vctk_old(root_path, meta_files=None, wavs_path="wav48", ignored_speakers=None):
+def vctk_old(root_path, meta_files=None, wavs_path="wav16", ignored_speakers=None):
     """homepages.inf.ed.ac.uk/jyamagis/release/VCTK-Corpus.tar.gz"""
     items = []
     meta_files = glob(f"{os.path.join(root_path,'txt')}/**/*.txt", recursive=True)
